@@ -53,7 +53,7 @@ def main():
         while True:
             print("\nWelcome! Please choose an option:")
             print("1. Log in")
-            print("2. Sign in")
+            print("2. Sign up")
             print("3. Exit")
             choice = input("Enter your choice (1, 2, 3): ").strip()
 
@@ -77,9 +77,9 @@ def main():
                         print("No recommendations available.")
 
                 else:
-                    print(f"No user found with the name '{name}'. Please sign in first.")
+                    print(f"No user found with the name '{name}'. Please sign up first.")
 
-            elif choice == '2':  # Sign in
+            elif choice == '2':  # Sign up
                 name = input("Enter your name: ").strip()
                 if name in users:
                     print(f"User '{name}' already exists. Please log in instead.")
