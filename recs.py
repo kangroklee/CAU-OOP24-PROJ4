@@ -2,25 +2,29 @@ from cosine_simil import get_similar
 
 def generate_recs(user, media_list, tfidf_matrix):
     """
-    사용자의 선호도와 시청 기록을 기반으로 추천 목록을 생성합니다.
-    
+    사용자 선호도를 기반으로 추천 목록을 생성합니다.
+
     Args:
-        user: User 객체
-        media_list: 미디어 객체 리스트
+        user (User): 사용자 객체
+        media_list (list): 미디어 데이터 리스트
         tfidf_matrix: TF-IDF 매트릭스
-    
+
     Returns:
-        추천 미디어 객체 리스트
+        list: 추천 미디어 리스트
     """
-    user_preference = {}
-    for media in user.likes:
-        user_preference[media] = 3  # 좋아하는 미디어는 가중치 3
-    for media in user.watched:
-        user_preference[media] = 1  # 시청한 미디어는 가중치 1
+    if not user.likes:
+        print("No preferences found for the user.")
+        return []
 
-    recommendations = []
-    for media, _ in sorted(user_preference.items(), key=lambda item: item[1], reverse=True):
-        target_index = media_list.index(media)  # 미디어의 인덱스 찾기
-        recommendations.extend(get_similar(media_list, tfidf_matrix, target_index))  # 유사한 미디어 추가
+    liked_indices = [i for i, media in enumerate(media_list) if media.title in {m.title for m in user.likes}]
 
-    return recommendations[:10]  # 상위 10개 반환
+    all_recommendations = []
+    for index in liked_indices:
+        similar_items = get_similar(media_list, tfidf_matrix, index)
+        all_recommendations.extend(similar_items)
+
+    unique_recommendations = {media.title: media for media in all_recommendations if
+                              media.title not in {m.title for m in user.likes}}
+
+    return list(unique_recommendations.values())[:10]
+
